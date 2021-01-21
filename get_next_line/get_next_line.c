@@ -18,18 +18,18 @@ int				freeptr(char **ptr, int r)
 	return (r);
 }
 
-char			*ft_strdup(char *src)
-{
-	char			*temp;
-	unsigned long	len;
+// char			*ft_strdup(char *src)
+// {
+// 	char			*temp;
+// 	unsigned long	len;
 
-	len = ft_strlen(src);
-	if (!(temp = (char*)malloc(len + 1)))
-		return (0);
-	memcpy(temp, src, len);
-	temp[len] = '\0';
-	return (temp);
-}
+// 	len = ft_strlen(src);
+// 	if (!(temp = (char*)malloc(len + 1)))
+// 		return (0);
+// 	memcpy(temp, src, len);
+// 	temp[len] = '\0';
+// 	return (temp);
+// }
 
 int				check_save(char **line, char **save)
 {

@@ -19,14 +19,15 @@
 # include <stdlib.h>
 # include <fcntl.h>
 # include <string.h>
+# include "../libft/libft.h"
 
 int				check_save(char **line, char **save);
 int				get_next_line(int fd, char **line);
 unsigned	int ft_strlensave(char *save);
 int				freeptr(char **ptr, int r);
-int	readfile(char *path);
-int	read_map(int mapline);
-int	getmapline(void);
+// int	readfile(char *path);
+// int	read_map(int mapline);
+// int	getmapline(void);
 
 
 
