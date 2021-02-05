@@ -21,7 +21,7 @@ int				varset(void)
 	if (access(g_texture[0], F_OK) != 0 || access(g_texture[1], F_OK) != 0
 			|| access(g_texture[2], F_OK) != 0 ||
 				access(g_texture[3], F_OK) != 0
-			|| access(g_texture[0], F_OK) != 0)
+			|| access(g_texture[4], F_OK) != 0)
 		return (0);
 	if (g_skycolor == -1 || g_floorcolor == -1)
 		return (0);
@@ -37,13 +37,13 @@ int				return_print(char *s)
 void			get_player_cord1(int i, int j)
 {
 	if (g_map[i][j] == 'N')
-		g_alpha = 0;
+		g_alpha = (-1) * M_PI_2;
 	if (g_map[i][j] == 'E')
-		g_alpha = M_PI;
+		g_alpha = 0;
 	if (g_map[i][j] == 'W')
-		g_alpha = M_PI_2;
+		g_alpha = M_PI;
 	if (g_map[i][j] == 'S')
-		g_alpha = -1 * M_PI_2;
+		g_alpha = M_PI_2;
 }
 
 void			get_player_cord(void)
@@ -60,8 +60,8 @@ void			get_player_cord(void)
 			if (g_map[i][j] == 'N' || g_map[i][j] == 'W' ||
 				g_map[i][j] == 'S' || g_map[i][j] == 'E')
 			{
-				g_playerx = (j * g_wall) + (g_wall / 2);
-				g_playery = (i * g_wall) + (g_wall / 2);
+				g_playerx = (j + 0.5) * g_wall;
+				g_playery = (i + 0.5) * g_wall;
 				get_player_cord1(i, j);
 			}
 			j++;
@@ -73,21 +73,21 @@ void			get_player_cord(void)
 int				return_error(int num_error)
 {
 	if (num_error == 0)
-		printf("Error\nMissing arguments");
+		printf("Error\nMissing arguments\n");
 	if (num_error == 2)
-		printf("Error\nMap file should end with .cub");
+		printf("Error\nMap file should end with .cub\n");
 	if (num_error == 3)
-		printf("Error\nError while reading from cub file");
+		printf("");
 	if (num_error == 4)
-		printf("Error\nThere are some additional information");
+		printf("Error\nThere are some additional information\n");
 	if (num_error == 5)
-		printf("Error\nOne or more elements are missing or wrong");
+		printf("Error\nOne or more elements are missing or wrong\n");
 	if (num_error == 6)
-		printf("Error\nResolution element is wrong");
+		printf("Error\nResolution element is wrong\n");
 	if (num_error == 7)
-		printf("Error\nMap is missconfigured");
+		printf("Error\nMap is missconfigured\n");
 	if (num_error == 8)
-		printf("Error\nPlayer has not been found");
+		printf("Error\nPlayer has not been found\n");
 	return (0);
 }
 
@@ -128,18 +128,21 @@ void			get_wall_size(void)
 		else
 			g_wall = g_heightmap / g_window_height;
 	}
+	g_wall = 64;
 }
 
 int				intigame(int argc, char **argv)
 {
 	if (argc <= 1)
 		return (return_error(0));
-	if (argc > 2 && ft_strncmp(argv[2], "--save", 5) != 0)
-		return (return_error(04));
+	if (argc > 2 && ft_strncmp(argv[2], "--save", 7) != 1)
+		return (return_error(4));
 	if (!cubextension(argv[1]))
 		return (return_error(2));
-	if ((readfile(argv[1]) != 1))
+	g_path = argv[1];
+	if ((readfile(g_path) != 1)){
 		return (return_error(3));
+	}
 	if (read_map(getmapline() - 1) != 0)
 		return (return_error(4));
 	if (!varset())

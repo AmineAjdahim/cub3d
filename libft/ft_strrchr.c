@@ -14,16 +14,34 @@
 
 char	*ft_strrchr(const char *s, int c)
 {
-	char *res;
+	int			i;
+	char		*t;
 
-	res = NULL;
-	if (c == 0)
-		return ((char *)(s + ft_strlen((char *)s)));
-	while (*s)
+	i = 0;
+	t = 0;
+	while (*s != '\0')
 	{
-		if (*s == c)
-			res = (char *)s;
+		if (*s == (char)c)
+			t = (char *)s;
 		s++;
 	}
-	return (res);
+	if (c == '\0')
+		return (char *)s;
+	return (t);
+}
+
+int		ft_strrchr_o(const char *s, int c)
+{
+	int			i;
+	int			t;
+
+	i = 0;
+	t = 0;
+	while (*s != '\0')
+	{
+		if (*s == (char)c)
+			t = 1;
+		s++;
+	}
+	return (t);
 }

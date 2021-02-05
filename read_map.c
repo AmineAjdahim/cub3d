@@ -80,7 +80,7 @@ int			read_map(int mapline)
 	error = 0;
 	i = 0;
 	allocmap();
-	fd = open("file.cub", O_RDONLY);
+	fd = open(g_path, O_RDONLY);
 	while (get_next_line(fd, &line) != 0)
 	{
 		if (i >= mapline)
@@ -112,8 +112,6 @@ int			playercount(void)
 			if (g_map[i][j] == 'W' || g_map[i][j] == 'S' ||
 				g_map[i][j] == 'N' || g_map[i][j] == 'E')
 				count++;
-			if (g_map[i][j] == 2)
-				count2++;
 			j++;
 		}
 		i++;

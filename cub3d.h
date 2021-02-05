@@ -93,6 +93,7 @@ typedef struct	s_intersection
 	int			j;
 	double		xi;
 	double		yi;
+	double		ls;
 
 }				t_intersection;
 
@@ -126,6 +127,24 @@ typedef struct	s_vertical
 	int			j;
 }				t_vertical;
 
+typedef struct	s_sprite
+{
+	int			x;
+	int			y;
+	int			width;
+	int			height;
+	double		size;
+	double		angle;
+	double		it_x;
+	double		it_y;
+	double		distance;
+}				t_sprite;
+
+t_sprite		g_sprite[INT32_MAX];
+
+int				g_nbr_sprite;
+int				g_fov;
+double			g_int_col[INT32_MAX];
 long	g_skycolor;
 long	g_floorcolor;
 char	*g_texture[5];
@@ -167,7 +186,7 @@ double	g_playerx;
 double	g_playery;
 double	g_alpha;
 double	g_wall;
-
+char	*g_path;
 t_coll			g_coll;
 t_alpha_p		g_alphap;
 t_intersection	g_store;
@@ -182,6 +201,7 @@ t_intersection	g_intersection;
 t_heroz			g_h;
 t_vertical		g_v;
 
+void			calcul_sprite(void);
 int				mlx_get_screen_size(void *mlx_ptr, int *sizex, int *sizey);
 void			draw(int x, int y, int color);
 void			draw_map(void);
@@ -190,7 +210,7 @@ void			sq(int x, int y, int size, int color);
 int				checksurround(char **mapp, int i, int j, char c);
 int				readfile(char *path);
 int				intigame(int argc, char **argv);
-int				get_textures(int i, int k, char c, char b);
+int				get_textures(char *line, int i, int k, char *c);
 unsigned	int	color_rgb(unsigned int r, unsigned int g, unsigned int b);
 int				floorsky(char *line, int i, long *color, char c);
 int				comma(char *s, char c);
@@ -210,7 +230,6 @@ t_intersection	heroz(double alphaa);
 t_intersection	vertical(double alphaa);
 void			initialize_textures(int add);
 int				update_matrix_width(char *line);
-int				get_textures(int i, int k, char c, char b);
 int				getmapline(void);
 void			rect(float l, int px);
 void			rect_draw(int rect_height, int x, int y, int color);
@@ -219,7 +238,7 @@ void			draw_wall(float l, int px, int ix, int s);
 int				varset(void);
 int				return_print(char *s);
 int				intigame(int argc, char **argv);
-int				resolution(char *line, int i, char resolution);
+int				resolution(char *line, int i);
 int				readfile2(char *line, int i);
 t_intersection	heroz2(double alphaa);
 t_intersection	vertical2(double alphaa);

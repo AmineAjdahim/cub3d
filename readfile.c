@@ -52,6 +52,8 @@ int					is_digit(char *s)
 	int i;
 
 	i = 0;
+	if(s == NULL)
+		return (0);
 	while (s[i] != '\0')
 	{
 		if (!ft_isdigit(s[i]) && s[i] != ' ')
@@ -86,31 +88,30 @@ int					check_color(long *color)
 
 int					floorsky(char *line, int i, long *color, char c)
 {
+	char	**d;
 	int		j;
-	char	**data;
 
 	if (line[i] != '\0' && line[i] == c && line[i + 1] == ' ')
 	{
-		check_color(color);
+		if (*color != (unsigned long)-1)
+			return (-1);
 		j = i + 2;
 		if (count(line + j, ',') != 2)
-			return (0);
-		data = ft_split(line + j, ',');
-		if (!is_digit(data[0]) || !is_digit(data[1]) || !is_digit(data[2]))
-			return (free_and_return(data, 0));
-		if (is_all_space(data[0]) || is_all_space(data[1]) ||
-			is_all_space(data[2]))
-			return (free_and_return(data, 0));
-		if (ft_atoi(data[0]) >= 256 || ft_atoi(data[1]) >= 256 ||
-			ft_atoi(data[1]) >= 256)
-			return (0);
-		*color = color_rgb(ft_atoi(data[0]),
-			ft_atoi(data[1]), ft_atoi(data[2]));
-		free_and_return(data, 0);
+			return (-1);
+		d = ft_split(line + j, ',');
+		if (!is_digit(d[0]) || !is_digit(d[1]) || !is_digit(d[2]))
+			return (free_and_return(d, -1));
+		if (is_all_space(d[0]) || is_all_space(d[1])
+				|| is_all_space(d[2]))
+			return (free_and_return(d, -1));
+		if (ft_atoi(d[0]) > 255 || ft_atoi(d[1]) > 255 || ft_atoi(d[2]) > 255
+			|| ft_atoi(d[0]) < 0 || ft_atoi(d[1]) < 0 || ft_atoi(d[2]) < 0)
+			return (-1);
+		*color = color_rgb(ft_atoi(d[0]), ft_atoi(d[1]), ft_atoi(d[2]));
+		free_and_return(d, 0);
+		return (1);
 	}
-	i++;
-	g_rf.i++;
-	return (1);
+	return (0);
 }
 
 int					num_of_params(char *line)
@@ -135,38 +136,53 @@ int					free_resolution(char **tw, char **data)
 	free(tw[3]);
 	free(tw[0]);
 	free(tw[1]);
-	free(data);
 	free(data[0]);
+	free(data);
 	return (0);
 }
 
-int					resolution(char *line, int i, char resolution)
+void	freearr(char **arr, int i, char **t, char **data)
+{
+	int	j;
+
+	j = -1;
+	if (ft_strncmp(t[2], t[0], ft_strlen(t[0])) != 1)
+		g_window_width = 2560;
+	else if (g_window_width > 2560)
+		g_window_width = 2560;
+	if (ft_strncmp(t[3], data[2], ft_strlen(t[1])) != 1)
+		g_window_height = 1440;
+	else if (g_window_height > 1440)
+		g_window_height = 1440;
+	while (++j < i)
+		free(arr[j]);
+}
+
+int	resolution(char *line, int i)
 {
 	char	**data;
-	char	*tw[4];
+	char	*t[4];
 
-	if (line[i] != '\0' && line[i] == 'R' && line[i + 1] == ' ' &&
-		num_of_params(line + i) == 2)
+	if (line[i] != '\0' && line[i] == 'R'
+			&& line[i + 1] == ' ')
 	{
-		if (g_window_width != -1 || g_window_height != -1)
-			return (0);
+		if(num_of_params(line + i) != 2)
+			return (-1);
 		data = ft_split(line + i, ' ');
-		if (!is_digit(data[1]) || !is_digit(data[2]))
-			return (0);
-		tw[0] = data[1];
-		tw[1] = data[2];
-		g_window_width = ft_atoi(tw[0]);
-		g_window_height = ft_atoi(tw[1]);
-		tw[2] = ft_itoa(g_window_width);
-		tw[3] = ft_itoa(g_window_height);
-		if (ft_strncmp(tw[2], tw[0], ft_strlen(tw[0])) != 1)
-			g_window_width = 2560;
-		if (ft_strncmp(tw[3], data[2], ft_strlen(tw[1])) != 1)
-			g_window_height = 1440;
-		free_resolution(tw, data);
+		t[0] = data[1];
+		t[1] = data[2];
+		free(data[0]);
+		if (g_window_width != -1 || g_window_height != -1 ||
+				!is_digit(t[0]) || !is_digit(t[1]))
+			return (-1);
+		g_window_width = ft_atoi(t[0]);
+		g_window_height = ft_atoi(t[1]);
+		t[2] = ft_itoa(g_window_width);
+		t[3] = ft_itoa(g_window_height);
+		freearr(t, 4, t, data);
+		return (1);
 	}
-	g_rf.i++;
-	return (1);
+	return (0);
 }
 
 int					readfile(char *path)
@@ -181,7 +197,8 @@ int					readfile(char *path)
 		i = 0;
 		while (line[i] == ' ')
 			i++;
-		readfile2(line, i);
+		if (!readfile2(line, i))
+			return (0);
 		free(line);
 	}
 	free(line);

@@ -17,6 +17,8 @@
 # include <unistd.h>
 # include <stdlib.h>
 
+
+void	*ft_malloc(size_t n);
 int		ft_isalpha(int c);
 int		ft_isascii(int c);
 int		ft_isdigit(int c);
@@ -53,4 +55,5 @@ size_t	ft_strlcat(char *dst, const char *src, size_t size);
 char	*ft_strmapi(char const *s, char(*f)(unsigned int, char));
 char	*ft_itoa(int n);
 char	**ft_split(char const *s, char c);
+int		ft_strrchr_o(const char *s, int c);
 #endif

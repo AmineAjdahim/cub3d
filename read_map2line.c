@@ -26,7 +26,7 @@ void		initialize_textures(int add)
 	g_texture4_id = mlx_xpm_file_to_image(g_mlx_ptr, g_texture[3],
 		&g_texture_width4, &g_texture_height4);
 	g_texture4 = (int *)mlx_get_data_addr(g_texture4_id, &add, &add, &add);
-	g_textures_id = mlx_xpm_file_to_image(g_mlx_ptr, g_texture[0],
+	g_textures_id = mlx_xpm_file_to_image(g_mlx_ptr, g_texture[4],
 		&g_texture_widths, &g_texture_heights);
 	g_textures = (int *)mlx_get_data_addr(g_textures_id, &add, &add, &add);
 }
@@ -38,24 +38,23 @@ int			update_matrix_width(char *line)
 	return (1);
 }
 
-int			get_textures(int i, int k, char c, char b)
+int	get_textures(char *line, int i, int k, char *c)
 {
 	int j;
 
-	if (g_rf.line[i] != '\0' && g_rf.line[i] == c && g_rf.line[i + 1] == b)
+	if (line[i] == 'N')
+		j = 0;
+	if (line[i] != '\0' && line[i] == c[0] && line[i + 1] == c[1])
 	{
 		if (g_texture[k] != NULL)
-			return (0);
-		if (g_rf.line[i + 2] != ' ')
-			return (0);
+			return (-1);
 		j = i + 2;
-		while (g_rf.line[j] != '\0' && g_rf.line[j] == ' ')
+		while (line[j] != '\0' && line[j] == ' ')
 			j++;
-		g_texture[k] = ft_strdup(g_rf.line + j);
+		g_texture[k] = ft_strdup(line + j);
+		return (1);
 	}
-	i++;
-	g_rf.i++;
-	return (1);
+	return (0);
 }
 
 int			getmapliine(char *line, int i)
@@ -80,7 +79,7 @@ int			getmapline(void)
 	int		mapline;
 	int		i;
 
-	fd = open("file.cub", O_RDONLY);
+	fd = open(g_path, O_RDONLY);
 	mapline = 0;
 	g_maplinefound = 0;
 	while (get_next_line(fd, &line) != 0)

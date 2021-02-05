@@ -124,6 +124,7 @@ unsigned char		*create_bitmap_info_header(int height, int width)
 	return (infoheader);
 }
 
+
 int					clickdetecter(void *key)
 {
 	mlx_destroy_window(g_mlx_ptr, g_win_ptr);
@@ -147,8 +148,9 @@ int					main(int argc, char **argv)
 	rays();
 	mlx_hook(g_win_ptr, 2, (1L << 1), deal_key, (void *)0);
 	mlx_hook(g_win_ptr, 17, 0, clickdetecter, (void *)0);
-	if (argc == 3 && ft_strncmp(argv[2], "--save", 5))
+	if (argc == 3 && ft_strncmp(argv[2], "--save", 7) == 1)
 		return (savebitmap(g_window_width, g_window_height, g_pixels));
+		
 	mlx_put_image_to_window(g_mlx_ptr, g_win_ptr, g_new_img, 0, 0);
 	mlx_loop(g_mlx_ptr);
 }

@@ -11,89 +11,97 @@
 /* ************************************************************************** */
 
 #include "libft.h"
-
-static	int			calc_num(const char *s, char c)
+typedef struct	s_split_next
 {
-	int count;
-	int i;
-	int mot;
+	size_t start;
+	size_t length;
+}				t_split_next;
 
-	count = 0;
-	mot = 0;
+static char
+	**ft_alloc_split(char const *s, char c)
+{
+	size_t	i;
+	char	**split;
+	size_t	total;
+
 	i = 0;
-	if (!s)
-		return (0);
-	while (*s != '\0')
+	total = 0;
+	while (s[i])
 	{
-		if (*s == c)
-			mot = 0;
-		else if (mot == 0)
-		{
-			mot = 1;
-			count++;
-		}
-		s++;
+		if (s[i] == c)
+			total++;
+		i++;
 	}
-	return (count);
+	split = (char**)malloc(sizeof(s) * (total + 2));
+	if (!split)
+		return (NULL);
+	return (split);
 }
 
-static	int			long_mot(const char *s, int i, char c)
+void
+	*ft_free_all_split_alloc(char **split, size_t elts)
 {
-	int len;
-	int j;
+	size_t	i;
 
-	len = 0;
-	j = i;
 	i = 0;
-	while (s[j] != c)
+	while (i < elts)
 	{
-		len++;
-		j++;
+		free(split[i]);
+		i++;
 	}
-	return (len);
-}
-
-static	void		*fr_ee(char **mots, int j)
-{
-	while (j--)
-		free(mots[j]);
-	free(mots);
+	free(split);
 	return (NULL);
 }
 
-static	char		**help(const char *s, char c, char **mots)
+static void
+	*ft_split_range(char **split, char const *s,
+		t_split_next *st, t_split_next *lt)
 {
-	int i;
-	int k;
-	int j;
-
-	i = 0;
-	j = 0;
-	while (s[i] != '\0' && j < calc_num(s, c))
-	{
-		k = 0;
-		while (s[i] == c)
-			i++;
-		mots[j] = malloc(sizeof(char) * long_mot(s, i, c) + 1);
-		if (mots[j] == NULL)
-			return (fr_ee(mots, j));
-		while (s[i] != c)
-			mots[j][k++] = s[i++];
-		mots[j][k] = '\0';
-		j++;
-	}
-	mots[j] = 0;
-	return (mots);
+	split[lt->length] = ft_substr(s, st->start, st->length);
+	if (!split[lt->length])
+		return (ft_free_all_split_alloc(split, lt->length));
+	lt->length++;
+	return (split);
 }
 
-char				**ft_split(char const *s, char c)
+static void
+	*ft_split_by_char(char **split, char const *s, char c)
 {
-	char	**mots;
+	size_t			i;
+	t_split_next	st;
+	t_split_next	lt;
 
-	if (!s)
+	i = 0;
+	lt.length = 0;
+	lt.start = 0;
+	while (s[i])
+	{
+		if (s[i] == c)
+		{
+			st.start = lt.start;
+			st.length = (i - lt.start);
+			if (i > lt.start && !ft_split_range(split, s, &st, &lt))
+				return (NULL);
+			lt.start = i + 1;
+		}
+		i++;
+	}
+	st.start = lt.start;
+	st.length = (i - lt.start);
+	if (i > lt.start && i > 0 && !ft_split_range(split, s, &st, &lt))
 		return (NULL);
-	mots = malloc(sizeof(char *) * calc_num(s, c) + 1);
-	if (!mots)
+	split[lt.length] = 0;
+	return (split);
+}
+
+char
+	**ft_split(char const *s, char c)
+{
+	char	**split;
+
+	if (!(split = ft_alloc_split(s, c)))
 		return (NULL);
-	return (help(s, c, mots));
+	if (!ft_split_by_char(split, s, c))
+		return (NULL);
+	return (split);
 }

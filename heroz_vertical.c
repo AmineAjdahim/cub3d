@@ -34,8 +34,7 @@ t_intersection		heroz2(double alphaa)
 t_intersection		heroz(double alphaa)
 {
 	g_h.up = asinf(sinf(alphaa));
-	g_store.l = (g_window_width > g_window_height) ?
-		g_window_width : g_window_height;
+	g_store.l = INT32_MAX;
 	if (g_playerx == 0 || g_playery == 0)
 		return (g_store);
 	if (g_h.up < 0)
@@ -49,8 +48,15 @@ t_intersection		heroz(double alphaa)
 	while (g_h.j >= 0 && g_h.i >= 0 && g_h.j < g_widthmap &&
 		g_h.i < g_heightmap)
 	{
+		if (g_map[g_h.i][g_h.j] == 2)
+		{
+			g_store.ls = sqrt(powf(g_playerx - g_h.ax, 2) + powf(g_playery - g_h.ay, 2));
+			g_store.i = g_h.i;
+			g_store.j = g_h.j;
+		}
 		heroz2(alphaa);
 	}
+	//printf(" heroz =============%f , %d, %d \n",g_store.ls,g_store.i,g_store.j = g_h.j);
 	return (g_store);
 }
 
@@ -76,8 +82,7 @@ t_intersection		vertical2(double alphaa)
 t_intersection		vertical(double alphaa)
 {
 	g_v.right = acosf(cosf(alphaa));
-	g_intersection.l = (g_window_width > g_window_height) ?
-		g_window_width : g_window_height;
+	g_intersection.l = INT32_MAX;
 	if (g_playerx == 0 || g_playery == 0)
 		return (g_intersection);
 	if (g_v.right < M_PI / 2)
@@ -91,7 +96,14 @@ t_intersection		vertical(double alphaa)
 	while (g_v.j >= 0 && g_v.i >= 0 && g_v.i < g_heightmap &&
 		g_v.j < g_widthmap)
 	{
+		if (g_map[g_v.i][g_v.j] == 2)
+		{
+			g_intersection.ls = sqrt(powf(g_playerx - g_v.bx, 2) + powf(g_playery - g_v.by, 2));
+			g_intersection.i = g_v.i;
+			g_intersection.j = g_v.j;
+		}
 		vertical2(alphaa);
 	}
+	//printf("vertical ================== %f , %d, %d \n",g_intersection.ls,g_intersection.i,g_intersection.j);
 	return (g_intersection);
 }

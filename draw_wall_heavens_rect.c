@@ -58,7 +58,7 @@ void	draw_wall(float l, int px, int ix, int s)
 	g_drw.end = (g_window_height + l) / 2;
 	g_drw.start = (g_window_height - l) / 2;
 	g_drw.end = (g_drw.end >= g_window_height) ? g_window_height : g_drw.end;
-	while (g_drw.start++ <= g_drw.end)
+	while (g_drw.start++ < g_drw.end)
 	{
 		g_drw.wall_y = (++g_drw.xt * g_rayss.texture_height) / l;
 		g_drw.wall_x = (((int)ix % s) * g_rayss.texture_width / s);

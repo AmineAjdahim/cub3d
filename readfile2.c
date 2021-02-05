@@ -12,14 +12,14 @@
 
 #include "cub3d.h"
 
-int				ismapline(char *line, int i)
+int		ismapline(char *line, int i)
 {
 	int a;
 
 	a = i;
 	while (line[a] != '\0')
 	{
-		if (ft_strchr("102WSEN ", line[a]))
+		if (!ft_strrchr_o("102WSNE ", line[a]))
 			return (0);
 		a++;
 	}
@@ -30,26 +30,44 @@ int				readfile2(char *line, int i)
 {
 	int r;
 
-	g_rf.line = line;
-	g_rf.i = 0;
 	r = 0;
-	r = resolution(line, i, 'R');
-	if (r == 1)
-		r = get_textures(i, 0, 'N', 'O');
-	if (r == 1)
-		r = get_textures(i, 1, 'S', 'O');
-	if (r == 1)
-		r = get_textures(i, 2, 'W', 'E');
-	if (r == 1)
-		r = get_textures(i, 3, 'E', 'A');
-	if (r == 1)
-		r = get_textures(i, 4, 'S', ' ');
-	if (r == 1)
-		r = floorsky(line, i, &g_skycolor, 'C');
-	if (r == 1)
+	r = resolution(line, i);
+	if (r == -1)
+	{
+		r = 0;
+		printf("Error\nResolution element is invalid");
+	}
+	if (r == 0)
+		r = get_textures(line, i, 0, "NO");
+	if (r == 0)
+		r = get_textures(line, i, 1, "SO");
+	if (r == 0)
+		r = get_textures(line, i, 2, "WE");
+	if (r == 0)
+		r = get_textures(line, i, 3, "EA");
+	if (r == 0)
+		r = get_textures(line, i, 4, "S ");
+	if (r == -1)
+	{
+		r = 0;
+		printf("Error\nTexture element is invalid\n");
+	}
+	if (r == 0)
 		r = floorsky(line, i, &g_floorcolor, 'F');
-	if (r == 1)
+	if (r == 0)
+		r = floorsky(line, i, &g_skycolor, 'C');
+	if (r == -1)
+	{
+		r = 0;
+		printf("Error\nColor element is invalid\n");
+	}
+	if (r == 0)
 		r = ismapline(line, i);
+	if (r == 0)
+	{
+		r = 0;
+		printf("Error\nAdditional information has been found\n");
+	}
 	if (line[i] == '\0')
 		return (1);
 	return (r);
